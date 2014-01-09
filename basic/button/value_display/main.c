@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <signal.h>
+#include <unistd.h>
 #include "button.h"
 
 int loop_run = 1;
 
-void loop_stop(void)
+void loop_stop(int sig)
 {
 	loop_run = 0;
 }
@@ -16,11 +17,15 @@ int main()
 		
 	// Set the signal
 	signal(SIGINT,loop_stop); // Ctrl-C
-	signal(SIGTERM,loop_stop); // Ctrl-D
 	
-	printf("Check button...\n");
+	printf("Checking button,press Ctrl-C to exit...\n");
 	while(loop_run)
+	{
 		printf("btn = %d\n",button_value());
-	
+		sleep(1);
+	}
+	printf("Exit\n");
+
 	button_end();
+	return 0;
 }
