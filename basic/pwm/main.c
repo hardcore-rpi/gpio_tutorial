@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "bcm2835.h"
+#include <signal.h>
 
 // PWM output on RPi Plug P1 pin 12 (which is GPIO pin 18)
 // in alt fun 5.
@@ -39,7 +40,7 @@ int main(int argc, char **argv)
     bcm2835_pwm_set_mode(PWM_CHANNEL, 1, 1);
     bcm2835_pwm_set_range(PWM_CHANNEL, RANGE);
     
-    printf("PWM on P1-12, %fHz",1200000.0/RANGE);
+    printf("PWM on P1-12, %fHz\n",1200000.0/RANGE);
     
     // Vary the PWM m/s ratio between 1/RANGE and (RANGE-1)/RANGE
     int direction = 1;
@@ -52,9 +53,11 @@ int main(int argc, char **argv)
 			direction = -1;
 		data += direction;
 		bcm2835_pwm_set_data(PWM_CHANNEL, data);
-		bcm2835_delay(50);
+		printf("\rDuty: %f",(float)data/RANGE);
+		bcm2835_delay(10);
 	}
 	
+	bcm2835_pwm_set_data(PWM_CHANNEL,0);
     bcm2835_close();
     printf("Exit\n");
     return 0;
