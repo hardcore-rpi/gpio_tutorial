@@ -3,13 +3,7 @@
 
 #define DS1307_ADDR 0x68
 
-struct ds1307_regs
-{
-	unsigned char regs[8];
-	unsigned char ram[0x3f-0x08+1];
-};
-
-extern void ds1307_init(void);
+extern int ds1307_init(void);
 extern void ds1307_end(void);
 
 extern int ds1307_get_ch(void);
