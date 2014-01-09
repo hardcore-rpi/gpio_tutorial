@@ -2,7 +2,7 @@
 #include "blink.h"
 
 #define FRE		2
-#define TIMES	10
+#define TIMES	5
 
 int main()
 {
@@ -11,7 +11,7 @@ int main()
 		printf("blink init ERROR!\n");
 		return 1;
 	}
-	printf("blink for %d times...\n",TIMES);
+	printf("blink at %dHz for %d times...\n",FRE,TIMES);
 	blink_start(FRE,TIMES);
 	blink_end();
 	return 0;

@@ -5,7 +5,10 @@
 
 int blink_init(void)
 {
-	return bcm2835_init();
+	if(!bcm2835_init())
+		return 0;
+	bcm2835_gpio_fsel(BLINK_PIN, BCM2835_GPIO_FSEL_OUTP);
+	return 1;
 }
 
 void blink_start(float fre,int times)
