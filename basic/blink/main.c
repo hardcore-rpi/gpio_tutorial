@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "blink.h"
+#include <signal.h>
+#include "bcm2835.h"
 
 #define BLINK_PIN	RPI_V2_GPIO_P1_11
 #define DELAY_MS	500
