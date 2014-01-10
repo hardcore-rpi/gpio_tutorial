@@ -15,6 +15,7 @@ void loop_stop(int sig)
 int main()
 {
 	FILE * fd;
+	char buf[5];
 
 	signal(SIGINT,loop_stop);
 	
@@ -28,14 +29,15 @@ int main()
 	fputs("in",fd);
 	fclose(fd);
 
-	fd = fopen("/sys/class/gpio/gpio" PIN_STR "/value","r");
 	while(loop_run)
 	{
-		printf("\rGPIO%d = %s",PIN_INT,fgets(fd));
+		fd = fopen("/sys/class/gpio/gpio" PIN_STR "/value","r");
+		fgets(buf,4,fd);
+		fclose(fd);
+		printf("GPIO%d = %s",PIN_INT,buf);
 		fflush(stdout);
 		sleep(1);
 	}
-	fclose(fd);
 	
 	fd = fopen("/sys/class/gpio/unexport","w");
 	fputs(PIN_STR,fd);
