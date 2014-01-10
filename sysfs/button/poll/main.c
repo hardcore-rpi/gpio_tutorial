@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <poll.h>
+#include <string.h>
 
 #define PIN_STR "17"
 #define PIN_INT 17
@@ -16,8 +17,7 @@ void loop_stop(int sig)
 int main()
 {
 	FILE * fd;
-	pollfd_t fds_poll[0];
-	char buf[5];
+	struct pollfd fds_poll[1];
 	int poll_ret=0;
 
 	signal(SIGINT,loop_stop);
@@ -31,8 +31,14 @@ int main()
 	fd = fopen("/sys/class/gpio/gpio" PIN_STR "/direction","w");
 	fputs("in",fd);
 	fclose(fd);
-	
-	fds_poll[0].fd = fopen("/sys/class/gpio/gpio" PIN_STR "/value","r");
+
+	fd = fopen("/sys/class/gpio/gpio" PIN_STR "/edge","w");
+	fputs("rising",fd);
+	fclose(fd);
+
+	memset(fds_poll,0,sizeof(fds_poll[0]));
+	fd = fopen("/sys/class/gpio/gpio" PIN_STR "/value","r");
+	fds_poll[0].fd = fileno(fd);
 	fds_poll[0].events = POLLPRI;
 
 	while(loop_run)
@@ -47,15 +53,8 @@ int main()
 		{
 			if(fds_poll[0].revents & POLLPRI)
 			{
-				int seek_ret=0;
-				ret = lseek(fd, 0, SEEK_SET);
-				if(ret<0)
-				{
-					printf("seek ERROR\n");
-					break;
-				}
-				fgets(buf,4,fd);
-				printf("interrupt: GPIO%d = %s",PIN_INT,buf);
+				printf("interrupt: GPIO%d rising\n",PIN_INT);
+				fds_poll[0].revents &= ~POLLPRI;
 			}
 		}
 	}
