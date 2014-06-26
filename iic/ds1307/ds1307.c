@@ -1,12 +1,5 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include "ds1307.h"
-
-struct ds1307_regs
-{
-	char regs[8];
-	char ram[0x3f-0x08+1];
-};
 
 struct ds1307_regs dregs;
 
@@ -48,80 +41,118 @@ int byte_join(char byt, int a,int b)
 	return (int)(byt&mask);
 }
 
-int ch_splite(struct ds1307_regs * dp, int * chp)
+int ds1307_get_ch(void)
 {
-	char byte = dp->regs[0];
-	chp = byte_join(byte,7,7);
-	return 1;
+	char byte = dregs->regs[0];
+	return byte_join(byte,7,7);
 }
 
-int sec_splite(struct ds1307_regs * dp, int * sec10p, int * secp)
+int ds1307_get_sec(void)
 {
-	char byte = dp->regs[0];
-	
-	sec10p = byte_join(byte,6,4);
-	secp = byte_join(byte,3,0);
-	
-	return 2;
+	char byte = dregs->regs[0];
+	return byte_join(byte,6,4)*10 + byte_join(byte,3,0);
 }
 
-int min_splite(struct ds1307_regs * dp, int * min10p, int * minp)
+int ds1307_get_min(void)
 {
-	char byte = dp->regs[1];
-	
-	min10p = byte_join(byte,6,4);
-	minp = byte_join(byte,3,0);
-	
-	return 2;
+	char byte = dregs->regs[1];
+	return byte_join(byte,6,4)*10 + byte_join(byte,3,0);
 }
 
-int hour_splite(struct ds1307_regs * dp, int * flag2p, int * flag1p, int * flag0p, int * hp)
+int ds1307_get_hour_mode(void)
 {
-	char byte = dp->regs[2];
-	
-	flag2p = byte_join(byte,6,6);
-	flag1p = byte_join(byte,5,5);
-	flag0p = byte_join(byte,4,4);
-	flag0p = byte_join(byte,4,4);
-	hp = byte_join(byte,3,0);
-	
-	return 5;
+	char byte = dregs->regs[2];
+	return byte_join(byte,6,6);
 }
 
-int day_splite(struct ds1307_regs * dp, int * dayp)
+int ds1307_get_hour(void)
 {
-	char byte = dp->regs[3];
-	dayp = byte_join(byte,2,0);
-	return 1;
+	char byte = dregs->regs[2];
+	return byte_join(byte,5,4)*10 + byte_join(byte,3,0);
 }
 
-int date_splite(struct ds1307_regs * dp, int * date10p, int * datep)
+int ds1307_get_day(void)
 {
-	char byte = dp->regs[4];
-	
-	min10p = byte_join(byte,6,4);
-	minp = byte_join(byte,3,0);
-	
-	return 2;
+	char byte = dregs->regs[3];
+	return byte_join(byte,2,0);
 }
 
-int mon_splite(struct ds1307_regs * dp, int * mon10p, int * monp)
+int ds1307_get_date(void)
 {
-	char byte = dp->regs[5];
-	
-	mon10p = byte_join(byte,4,4);
-	monp = byte_join(byte,3,0);
-	
-	return 2;
+	char byte = dregs->regs[4];
+	return byte_join(byte,5,4)*10 + byte_join(byte,3,0);
 }
 
-int year_splite(struct ds1307_regs * dp, int * year10p, int * yearp)
+int ds1307_get_mon(void)
 {
-	char byte = dp->regs[6];
-	
-	year10p = byte_join(byte,7,4);
-	yearp = byte_join(byte,3,0);
-	
-	return 2;
+	char byte = dregs->regs[5];
+	return byte_join(byte,4,4)*10 + byte_join(byte,3,0);
 }
 
+int ds1307_get_year(void)
+{
+	char byte = dregs->regs[6];
+	return byte_join(byte,7,4)*10 + byte_join(byte,3,0);
+}
+
+void ds1307_set_ch(int x)
+{
+	if(x)
+		dregs->regs[0] |= 0x80;
+	else
+		dregs->regs[0] &= ~0x80;
+	ds1307_write_byte(dregs->regs[0]);
+}
+
+void ds1307_set_sec(int sec)
+{
+	dregs->regs[0] &= 0x80;
+	dregs->regs[0] += (unsigned char)sec;
+	ds1307_write_byte(dregs->regs[0]);
+}
+
+void ds1307_set_min(int min)
+{
+	dregs->regs[1] = (unsigned char)min;
+	ds1307_write_byte(dregs->regs[1]);
+}
+
+void ds1307_set_hour_mode(int x)
+{
+	if(x)
+		dregs->regs[2] |= 0x40;
+	else
+		dregs->regs[2] &= ~0x40;
+	ds1307_write_byte(dregs->regs[2]);
+}
+
+void ds1307_set_hour(int hour)
+{
+	dregs->regs[2] &= 0x40;
+	dregs->regs[2] += (unsigned char)hour;
+	ds1307_write_byte(dregs->regs[2]);
+}
+
+void ds1307_set_day(int day)
+{
+	dregs->regs[3] = (unsigned char)day;
+	ds1307_write_byte(dregs->regs[3]);
+}
+
+void ds1307_set_date(int date)
+{
+	dregs->regs[4] = (unsigned char)date;
+	ds1307_write_byte(dregs->regs[4]);
+}
+
+void ds1307_set_mon(int mon)
+{
+	dregs->regs[5] = (unsigned char)mon;
+	ds1307_write_byte(dregs->regs[5]);
+}
+
+void ds1307_set_year(int year)
+{
+	dregs->regs[6] = (unsigned char)year;
+	ds1307_write_byte(dregs->regs[6]);
+}
