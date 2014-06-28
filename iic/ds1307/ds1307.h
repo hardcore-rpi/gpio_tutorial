@@ -1,6 +1,8 @@
 #ifndef __ds1307__
 #define __ds1307__
 
+#define DS1307_ADDR 0x01
+
 struct ds1307_regs
 {
 	unsigned char regs[8];
@@ -8,6 +10,8 @@ struct ds1307_regs
 };
 
 extern void ds1307_init(void);
+extern void ds1307_end(void);
+
 extern int ds1307_get_ch(void);
 extern int ds1307_get_sec(void);
 extern int ds1307_get_min(void);
@@ -17,6 +21,7 @@ extern int ds1307_get_day(void);
 extern int ds1307_get_date(void);
 extern int ds1307_get_mon(void);
 extern int ds1307_get_year(void);
+
 extern void ds1307_set_ch(int x);
 extern void ds1307_set_sec(int sec);
 extern void ds1307_set_min(int min);

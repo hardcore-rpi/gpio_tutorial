@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <bcm2835>
 #include "ds1307.h"
 
 struct ds1307_regs dregs;
@@ -10,27 +11,40 @@ void ds1307_regs_init(struct ds1307_regs * dp)
 
 void ds1307_init(void)
 {
-	;
+	bcm2835_i2c_begin();
+	bcm2835_i2c_setSlaveAddress(DS1307_ADDR);
+}
+
+void ds1307_end(void)
+{
+	bcm2835_i2c_end();
 }
 
 char ds1307_read_byte(int n)
 {
-	;
+	char addr_str[1] = {(char)addr};
+	char buf[1];
+	
+	bcm2835_i2c_read_register_rs(addr_str,buf,1);
 }
 
-void ds1307_write_byte(int n, char dat)
+void ds1307_write_byte(int addr, char dat)
 {
 	;
 }
 
 void ds1307_read_all(struct ds1307_regs * dp)
 {
-	;
+	int i;
+	for(i=0;i<=7;i++)
+		dp->regs[i] = ds1307_read_byte(i);
 }
 
 void ds1307_write_all(struct ds1307_regs * dp)
 {
-	;
+	int i;
+	for(i=0;i<=7;i++)
+		ds1307_write_byte(i,dp->regs[i]);
 }
 
 int byte_join(char byt, int a,int b)
