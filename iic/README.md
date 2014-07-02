@@ -17,4 +17,6 @@ sudo modprobe i2c_dev
 1. PCF8574 IO扩展
 
 更多信息，访问：  
-[树莓派学习笔记——I2C设备载入和速率设置](http://blog.csdn.net/xukai871105/article/details/18234075)
+[树莓派学习笔记——I2C设备载入和速率设置](http://blog.csdn.net/xukai871105/article/details/18234075)  
+[树莓派学习笔记——I2C Tools 学习笔记](http://blog.csdn.net/xukai871105/article/details/15029843)  
+[树莓派启用i2c设备](http://www.cnblogs.com/hangxin1940/archive/2013/04/02/2997077.html)  
