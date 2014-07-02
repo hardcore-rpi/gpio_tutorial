@@ -5,7 +5,7 @@
 sudo pip install RPIO
 ```
 
-Pins: 11,12,13,15,16,18,22
+Pins(gpio_id): 11(17), 12(18), 13(27), 15(22), 16(23), 18(24), 22(25)
 
 1. blink
 1. button
