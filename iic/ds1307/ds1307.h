@@ -1,7 +1,7 @@
 #ifndef __ds1307__
 #define __ds1307__
 
-#define DS1307_ADDR 0x01
+#define DS1307_ADDR 0x68
 
 struct ds1307_regs
 {
