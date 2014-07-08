@@ -12,5 +12,5 @@ Pins(gpio_id): 11(17), 12(18), 13(27), 15(22), 16(23), 18(24), 22(25)
 1. PWM
 
 更多信息，访问  
-<https://github.com/metachris/RPIO>
+<https://github.com/metachris/RPIO>  
 <http://www.airspayce.com/mikem/bcm2835>
