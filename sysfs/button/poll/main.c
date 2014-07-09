@@ -36,7 +36,6 @@ int main()
 	fputs("rising",fd);
 	fclose(fd);
 
-	memset(fds_poll,0,sizeof(fds_poll[0]));
 	fd = fopen("/sys/class/gpio/gpio" PIN_STR "/value","r");
 	fds_poll[0].fd = fileno(fd);
 	fds_poll[0].events = POLLPRI;
@@ -54,7 +53,6 @@ int main()
 			if(fds_poll[0].revents & POLLPRI)
 			{
 				printf("interrupt: GPIO%d rising\n",PIN_INT);
-				fds_poll[0].revents &= ~POLLPRI;
 			}
 		}
 	}
