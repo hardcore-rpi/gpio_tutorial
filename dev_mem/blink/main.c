@@ -6,42 +6,44 @@
 #include <string.h>
 #include <unistd.h>
 
-#define BCM2835_BLOCK_SIZE	(4*1024)
 #define GPIO_BASE	0x20200000
 #define GPFSEL1	0x0004
 #define GPSET0	0x001c
+#define GPCLR0	0x0028
 
 int main()
 {
 	int mem_fd=0;
-	volatile int * pin_fselp=MAP_FAILED;
-	volatile int * pin_setp=MAP_FAILED;
+	volatile int * gpio=MAP_FAILED;
 
-	if( (memfd = open("/dev/mem", O_RDWR | O_SYNC)) < 0 )
+	if( (mem_fd = open("/dev/mem", O_RDWR | O_SYNC)) < 0 )
 	{
 		printf("/dev/mem open ERROR: %s\n",strerror(errno));
 		return 1;
 	}
+	printf("open /dev/mem\n");
 
-	pin_fselp = mapmem("fsel", BCM2835_BLOCK_SIZE, memfd, GPIO_BASE+GPFSEL1);
-	pin_setp = mapmem("set", BCM2835_BLOCK_SIZE, memfd, GPIO_BASE+GPSET0);
-	if(pin_fselp==MAP_FAILED || pin_setp==MAP_FAILED)
+	gpio = mmap(NULL,4096,PROT_READ|PROT_WRITE, MAP_SHARED, mem_fd, GPIO_BASE);
+	printf("map GPIO_BASE(%x) to %x\n",GPIO_BASE,(unsigned int)gpio);
+	
+	if(gpio==MAP_FAILED)
 	{
-		printf("map failed\n");
+		printf("map failed: %s\n",strerror(errno));
 		close(mem_fd);
 		return 1;
 	}
 
-	// GPFSEL1 ^ [29...27] = 001
-	*pin_fselp &= 0xE3FFFFFF;
-	*pin_fselp |= 1<<27;
+	// GPFSEL1 ^ [23...21] = 001
+	*(gpio+GPFSEL1/4) &= ~0xE00000;
+	*(gpio+GPFSEL1/4) |= 1<<21;
 
-	*pin_setp = 1<<17;
-
+	*(gpio+GPSET0/4) = 1<<17;
 	sleep(1);
+	*(gpio+GPCLR0/4) = 1<<17;
 
-	unmapmem((void**) &pin_fselp, BCM2835_BLOCK_SIZE);
-	unmapmem((void**) &pin_setp, BCM2835_BLOCK_SIZE);
+	munmap(&gpio,4096);
+	close(mem_fd);
+	printf("munmap and close\n");
 
 	return 0;
 }
