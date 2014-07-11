@@ -8,32 +8,32 @@
  * 设备目录 /dev/miscdevice.name
  */
 
-struct file_operations demo_dev_fops = 
+struct file_operations led_dev_fops =
 {
 	.owner = THIS_MODULE,
 };
 
-static struct miscdevice demo_dev = 
+static struct miscdevice led_dev =
 {
 	.minor = MISC_DYNAMIC_MINOR,
-	.name = "misc_demo",
-	.fops = &demo_dev_fops,
+	.name = "blink_led",
+	.fops = &led_dev_fops,
 };
 
-static int __init demo_dev_init(void)
+static int __init led_dev_init(void)
 {
-	misc_register(&demo_dev);
+	misc_register(&led_dev);
 	return 0;
 }
 
-static void __exit demo_dev_exit(void)
+static void __exit led_dev_exit(void)
 {
-	misc_deregister(&demo_dev);
+	misc_deregister(&led_dev);
 }
 
-module_init(demo_dev_init);
-module_exit(demo_dev_exit);
+module_init(led_dev_init);
+module_exit(led_dev_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("concelfy@foxmail.com");
-MODULE_DESCRIPTION("misc device driver test");
+MODULE_DESCRIPTION("let's blink a LED");

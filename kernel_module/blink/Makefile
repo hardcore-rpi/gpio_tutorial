@@ -2,11 +2,11 @@
 
 ifneq ($(KERNELRELEASE),)
 	# kbuild syntax. dependency relationshsip of files and target modules are listed here.
-	mymodule-objs := misc_demo.o
-	obj-m := misc_demo.o
+	mymodule-objs := blink_led_driver.o
+	obj-m := blink_led_driver.o
 else
 	PWD  := $(shell pwd)
-	KDIR := /home/concefly/kernel/linux-3.10.25
+	KDIR := /home/concefly/project/git/rpi_linux
 
 all:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules  ARCH=arm  CROSS_COMPILE=arm-linux-gnueabi-
