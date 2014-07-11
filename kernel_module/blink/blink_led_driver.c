@@ -8,9 +8,28 @@
  * 设备目录 /dev/miscdevice.name
  */
 
+int led_dev_open(struct inode * ip, struct file * fp)
+{
+	;
+}
+
+ssize_t led_dev_write(struct file * fp, const char __user * up, size_t size, loff_t * ltp)
+{
+	;
+}
+
+ssize_t led_dev_read(struct file * fp, char __user * up, size_t size, loff_t * ltp)
+{
+	;
+}
+
 struct file_operations led_dev_fops =
 {
 	.owner = THIS_MODULE,
+	.open = led_dev_open,
+	.close = led_dev_close,
+	.write = led_dev_write,
+	.read = led_dev_read,
 };
 
 static struct miscdevice led_dev =
